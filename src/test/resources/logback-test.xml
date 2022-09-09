@@ -1,0 +1,16 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d{HH:mm:ss.SSS} %X{correlation_id} [%thread %X{fiber}] %-5level %logger{36}=%X{spanTime} %msg%n</Pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+    <logger name="org.testcontainers" level="WARN" />
+    <logger name="org.flyway" level="WARN" />
+    <logger name="com.github.dockerjava" level="WARN" />
+    <logger name="com.zaxxer.hikari" level="WARN" />
+</configuration>
