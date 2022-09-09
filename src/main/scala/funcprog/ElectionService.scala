@@ -18,47 +18,26 @@ trait ElectionService {
 
 object ElectionService {
 
-  lazy val live: ZLayer[Database & ValidationService, Nothing, ElectionService] = ZLayer {
-    for {
-      database          <- ZIO.service[Database]
-      validationService <- ZIO.service[ValidationService]
-    } yield ElectionServiceLive(database, validationService)
-  }
+  lazy val live: ZLayer[Database & ValidationService, Nothing, ElectionService] = ???
 
   final case class ElectionServiceLive(
     database: Database,
     validationService: ValidationService
   ) extends ElectionService {
 
+    // TODO
     override def createParty(party: Party): ZIO[Any, Nothing, Party] =
-      database
-        .insertParty(party)
-        .tap(inserted => ZIO.logInfo(s"Created party: $inserted"))
-        .catchAll { (_: UniqueConstraintViolation) =>
-          ZIO.logInfo(s"Creating party failed with unique constraint violation. Ignoring...").as(party)
-        }
+      ???
 
+    // TODO
     // 1. Log entry
     // 2. Validate the vote using the external vote validation service
     // 3. Handle the response from the validation service
     override def registerVote(vote: Vote): ZIO[Any, Error.InvalidInput, Unit] = {
 
-      def validateVote(vote: Vote) =
-        validationService
-          .validateVote(vote)
-          .retry(
-            Schedule.recurs(5) && Schedule.spaced(10.millis) && Schedule.recurWhile(_ == ValidationError.Temporary)
-          )
-          .tapError(e => ZIO.logError(s"Failed to validate vote: $vote with error: $e"))
-          .orDie
+      def validateVote(vote: Vote): ZIO[Any, Nothing, ValidationResponse] = ???
 
-      def handleResponse(response: ValidationResponse) = response match {
-        case ValidationResponse.Valid   =>
-          ZIO.logInfo(s"Vote: $vote is valid.") *> database.insertVote(vote)
-        case ValidationResponse.Invalid =>
-          val errorMessage = s"Invalid vote: $vote"
-          ZIO.logInfo(errorMessage) *> ZIO.fail(Error.InvalidInput(errorMessage))
-      }
+      def handleResponse(response: ValidationResponse): ZIO[Any, Error.InvalidInput, Unit] = ???
 
       for {
         _        <- ZIO.logInfo(s"Registering vote: $vote")
@@ -68,12 +47,9 @@ object ElectionService {
 
     }
 
+    // TODO
     override def getVote(nationalIdNumber: Nin): ZIO[Any, Error.NotFound, Vote] =
-      database
-        .getVote(nationalIdNumber)
-        .some
-        .map(_.toVote)
-        .mapError(_ => Error.NotFound(s"Vote for $nationalIdNumber not found."))
+      ???
   }
 
   sealed trait Error

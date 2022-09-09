@@ -1,6 +1,6 @@
 object CompilerSettings {
 
-  val strict = true
+  val strict = false
 
   lazy val compilerSettings =
     if (strict) stdSettings ++ strictSettings

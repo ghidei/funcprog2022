@@ -36,41 +36,17 @@ object DatabaseSpec extends ZIOSpecDefault {
 
   lazy val databaseSuite = suite("DatabaseSpec")(
     test("should be able to insert party") {
-      check(Generators.genParty) { party =>
-        for {
-          _ <- Database.insertParty(party)
-          _ <- Database.deleteAllRows
-        } yield assertCompletes
-      }
-    },
+      ???
+    } @@ ignore,
     test("should fail with UniqueConstraintViolation if inserting twice") {
-      check(Generators.genParty) { party =>
-        for {
-          _   <- Database.insertParty(party)
-          res <- Database.insertParty(party).either
-          _   <- Database.deleteAllRows
-        } yield assertTrue(res.isLeft)
-      }
-    },
+      ???
+    } @@ ignore,
     test("should be able to insert vote") {
-      check(Generators.genVote) { vote =>
-        for {
-          _ <- Database.insertParty(vote.party)
-          _ <- Database.insertVote(vote)
-          _ <- Database.deleteAllRows
-        } yield assertCompletes
-      }
-    },
+      ???
+    } @@ ignore,
     test("should be able to insert and get vote") {
-      check(Generators.genVote) { vote =>
-        for {
-          _      <- Database.insertParty(vote.party)
-          _      <- Database.insertVote(vote)
-          actual <- Database.getVote(vote.person.nationalIdNumber)
-          _      <- Database.deleteAllRows
-        } yield assertTrue(vote == actual.get.toVote)
-      }
-    }
+      ???
+    } @@ ignore
   ) @@ timed
 
 }

@@ -1,5 +1,6 @@
 package funcprog
 
+import funcprog.HttpServerSettings.*
 import funcprog.config.AppConfig
 import funcprog.database.Database
 import funcprog.routes.ElectionServer
@@ -9,14 +10,11 @@ import zio.*
 
 object Main extends ZIOAppDefault {
 
+  lazy val liveLayer: ZLayer[Any, Nothing, AppConfig & ElectionServer & HttpServerSettings] = ???
+
   override val run =
     App.program.provide(
-      HttpServerSettings.default,
-      AppConfig.live,
-      ElectionServer.live,
-      ElectionService.live,
-      Database.live,
-      ValidationService.live
+      liveLayer
     )
 
 }
